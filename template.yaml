@@ -1,28 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
 Resources:
-  GoFunctionGo:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-GoFunctionGo
-      Description: !Sub
-        - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
-        - ResourceName: GoFunctionGo
-      CodeUri: src/GoFunctionGo
-      Handler: main.Handler
-      Runtime: golang1.x
-      MemorySize: 3008
-      Timeout: 30
-      Tracing: Active
-      Policies:
-        - AWSXrayWriteOnlyAccess
-      Events:
-        GoApiPOST:
-          Type: Api
-          Properties:
-            Path: /
-            Method: POST
-            RestApiId: !Ref GoApi
   GoApi:
     Type: AWS::Serverless::Api
     Properties:
@@ -36,10 +14,6 @@ Resources:
         paths:
           /:
             post:
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GoFunctionGo.Arn}/invocations
               responses: {}
       EndpointConfiguration: REGIONAL
       TracingEnabled: true

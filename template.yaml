@@ -16,6 +16,22 @@ Resources:
       Tracing: Active
       Policies:
         - AWSXrayWriteOnlyAccess
+  GoApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub
+        - ${ResourceName} From Stack ${StackTagName} Environment ${EnvironmentTagName}
+        - ResourceName: GoApi
+      StageName: !Ref EnvironmentAPIGatewayStageName
+      DefinitionBody:
+        swagger: '2.0'
+        info: {}
+        paths:
+          /:
+            post:
+              responses: {}
+      EndpointConfiguration: REGIONAL
+      TracingEnabled: true
 Parameters:
   StackTagName:
     Type: String
@@ -23,3 +39,6 @@ Parameters:
   EnvironmentTagName:
     Type: String
     Description: Environment Name (injected by Stackery at deployment time)
+  EnvironmentAPIGatewayStageName:
+    Type: String
+    Description: Environment name used for API Gateway Stage names (injected by Stackery at deployment time)

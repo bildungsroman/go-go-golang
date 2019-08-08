@@ -1,17 +1,17 @@
 package main
 
 import (
-    "fmt"
-    "context"
-    "github.com/aws/aws-lambda-go/lambda"
+	"context"
+	"fmt"
+	"github.com/aws/aws-lambda-go/lambda"
 )
 
 func Handler(ctx context.Context, event interface{}) (string, error) {
-  fmt.Println(event)
+	fmt.Println(event)
 
-  return "OK", nil
+	return "OK", nil
 }
 
 func main() {
-  lambda.Start(Handler)
+	lambda.Start(Handler)
 }

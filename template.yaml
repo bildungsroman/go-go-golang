@@ -12,30 +12,30 @@ Resources:
         swagger: '2.0'
         info: {}
         paths:
-          /1:
-            post:
+          /getUser:
+            get:
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
-                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Function.Arn}/invocations
+                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getUserHandler.Arn}/invocations
               responses: {}
-          /2:
+          /addUser:
             post:
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
-                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Function2.Arn}/invocations
+                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${addUserHandler.Arn}/invocations
               responses: {}
       EndpointConfiguration: REGIONAL
       TracingEnabled: true
-  Function:
+  addUserHandler:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${AWS::StackName}-Function
+      FunctionName: !Sub ${AWS::StackName}-addUserHandler
       Description: !Sub
         - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
-        - ResourceName: Function
-      CodeUri: src/Function
+        - ResourceName: addUserHandler
+      CodeUri: src/addUserHandler
       Handler: main
       Runtime: go1.x
       MemorySize: 3008
@@ -44,20 +44,20 @@ Resources:
       Policies:
         - AWSXrayWriteOnlyAccess
       Events:
-        GoApiPOST1:
+        GoApiPOSTaddUser:
           Type: Api
           Properties:
-            Path: /1
+            Path: /addUser
             Method: POST
             RestApiId: !Ref GoApi
-  Function2:
+  getUserHandler:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${AWS::StackName}-Function2
+      FunctionName: !Sub ${AWS::StackName}-getUserHandler
       Description: !Sub
         - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
-        - ResourceName: Function2
-      CodeUri: src/Function2
+        - ResourceName: getUserHandler
+      CodeUri: src/getUserHandler
       Handler: main
       Runtime: go1.x
       MemorySize: 3008
@@ -66,11 +66,11 @@ Resources:
       Policies:
         - AWSXrayWriteOnlyAccess
       Events:
-        GoApiPOST2:
+        GoApiGETgetUser:
           Type: Api
           Properties:
-            Path: /2
-            Method: POST
+            Path: /getUser
+            Method: GET
             RestApiId: !Ref GoApi
 Parameters:
   StackTagName:
